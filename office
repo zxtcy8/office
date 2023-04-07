@@ -1,0 +1,74 @@
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple python-office -U
+import office # 导入python-office
+path = '.'  # path这里，填写你存放word文件的位置，例如：C:/app/workbook
+office.word.docx2pdf(path=path) # 程序就可以自动将该目录下的所有word文档，自动转换成pdf文档了
+
+# coding=utf-8
+
+from docx import Document  # 文档对象
+from docx.shared import Inches # 英尺
+
+# 创建文档对象
+document = Document()
+
+# 增加文档标题（0级标题）
+document.add_heading('文章标题',0)
+
+# 增加段落
+p = document.add_paragraph('你让他用戒指把你套上的时候，我察觉到你脸上复杂的笑容。')
+
+# 段落后追加内容并设置追加的内容为粗体
+p.add_run('追加的段落内容，样式为粗体。').bold = True
+
+# 段落后追加内容并设置追加的内容为斜体
+p.add_run('追加的段落内容，样式为斜体').italic = True
+
+# 添加一级标题
+document.add_heading('一级标题', level = 1)
+
+#添加段落并设置段落为引用样式
+document.add_paragraph('添加段落并添加了样式，此处的样式为引用', style= 'Intense Quote')
+
+#增加段落并在段落前面加上项目符号（List Bullet样式为）
+document.add_paragraph(
+    '此处是项目符号样式', style = 'List Bullet'
+)
+
+#增加段落并添加编号
+document.add_paragraph(
+    '此处是编号样式', style = 'List Number'
+)
+
+# 添加图片并设置宽度为5英寸
+document.add_picture('xq.jpg', width=Inches(5))
+
+
+#创建一个二维元组，保存即将操作的表格的内容
+records = (
+    (1, '张三', '30'),
+    (2, '李四', '35'),
+    (3, '王五', '38')
+)
+
+# 创建一个1行3列的表格
+table = document.add_table(rows=1,cols=3)
+
+# 在表格第一行填充内容
+hdr_cells = table.rows[0].cells
+hdr_cells[0].text= '编号'
+hdr_cells[1].text= '姓名'
+hdr_cells[2].text= '年龄'
+
+# 将定义好的表格内容追加进表格中
+for bh, nl, xb in records:
+    # 表格追加一行并分别填充1，2，3单元格
+    row_cells = table .add_row().cells
+    row_cells[0].text = str(bh)
+    row_cells[1].text = nl
+    row_cells[2].text = xb
+
+# 添加分页符
+document.add_page_break()
+
+#保存文档
+document.save('demo.docx')
